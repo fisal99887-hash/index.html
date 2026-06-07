@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة أسعار العمرة 1448</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#c9a84c;--gold-l:#e8c96a;--gold-d:#a07830;
+  --bg:#0d2418;--text:#f0ede8;--muted:#9bb8a0;
+  --cb:rgba(255,255,255,0.06);--border:rgba(201,168,76,0.2);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);padding:14px 12px 40px;}
+
+.header{text-align:center;margin-bottom:14px;}
+.header h1{font-size:1.05rem;font-weight:900;color:var(--gold);}
+.header p{font-size:0.7rem;color:var(--muted);}
+
+/* layout */
+.row1{display:grid;grid-template-columns:1fr 2fr;gap:0;margin-bottom:12px;}
+.row2{display:grid;grid-template-columns:1fr 2fr;gap:10px;}
+@media(max-width:700px){.row1,.row2{grid-template-columns:1fr;}}
+
+.card{background:var(--cb);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.card.no-gap-left{border-radius:0 10px 10px 0;border-right:none;}
+.card.no-gap-right{border-radius:10px 0 0 10px;}
+.card-title{font-size:0.85rem;font-weight:700;color:var(--gold);margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+
+/* input rows */
+.row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.row:last-child{border-bottom:none;}
+.row label{font-size:0.78rem;color:var(--muted);flex:1;}
+.row input{width:100px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:5px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.82rem;padding:4px 8px;text-align:left;direction:ltr;}
+.row input:focus{outline:none;border-color:var(--gold);}
+.row .calc-val{width:100px;font-size:0.82rem;color:#6fcf8a;text-align:left;direction:ltr;font-weight:600;}
+.row.total label{color:#ddd;font-weight:700;font-size:0.82rem;}
+.row.total .calc-val{color:var(--gold-l);font-weight:900;font-size:0.9rem;}
+.row.highlight input{border-color:rgba(201,168,76,0.5);background:rgba(201,168,76,0.08);font-weight:700;}
+
+/* pkg buttons */
+.pkgs{display:flex;gap:6px;margin-bottom:10px;}
+.pb{flex:1;padding:8px 4px;border-radius:8px;border:2px solid rgba(201,168,76,0.25);background:rgba(0,0,0,0.2);color:#ccc;font-family:'Tajawal',sans-serif;font-size:0.75rem;font-weight:700;cursor:pointer;text-align:center;transition:all 0.18s;}
+.pb:hover{border-color:var(--gold);color:#fff;}
+.pb.active{background:linear-gradient(135deg,var(--gold),var(--gold-d));border-color:var(--gold);color:var(--bg);}
+.pb-sub{font-size:0.65rem;margin-top:3px;opacity:0.9;}
+
+/* pkg table */
+table.pt{width:100%;border-collapse:collapse;}
+table.pt th{font-size:0.72rem;color:var(--gold);padding:5px 4px;text-align:center;border-bottom:1px solid var(--border);}
+table.pt th:first-child{text-align:right;}
+table.pt td{padding:4px 4px;font-size:0.75rem;color:var(--muted);vertical-align:middle;border-bottom:1px solid rgba(255,255,255,0.04);}
+table.pt input{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:5px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.75rem;padding:4px 6px;text-align:left;direction:ltr;}
+table.pt input:focus{outline:none;border-color:var(--gold);}
+table.pt .cv{font-size:0.75rem;color:#6fcf8a;direction:ltr;font-weight:600;}
+table.pt tr.ar td:first-child{color:var(--gold);font-weight:700;}
+table.pt tr.ar input{border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.06);}
+
+/* result boxes */
+.res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+@media(max-width:500px){.res-grid{grid-template-columns:1fr 1fr;}}
+.rbox{border-radius:8px;padding:8px 11px;display:flex;flex-direction:column;gap:3px;}
+.rbox .rl{font-size:0.62rem;color:var(--muted);}
+.rbox .rv{font-size:1rem;font-weight:900;direction:ltr;}
+.rbox-gold{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);}
+.rbox-gold .rv{color:var(--gold-l);}
+.rbox-plain{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);}
+.rbox-plain .rv{color:#fff;}
+.rbox-green{background:rgba(111,207,138,0.08);border:1px solid rgba(111,207,138,0.3);}
+.rbox-green .rv{color:#6fcf8a;}
+.rbox-blue{background:rgba(100,180,255,0.06);border:1px solid rgba(100,180,255,0.25);}
+.rbox-blue .rv{color:#7ec8f7;}
+.rbox-total{grid-column:1/-1;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.4);flex-direction:row;justify-content:space-between;align-items:center;padding:10px 16px;}
+.rbox-total .rl{font-size:0.8rem;font-weight:700;color:var(--gold);}
+.rbox-total .rv{font-size:1.2rem;color:var(--gold-l);}
+
+.divider{height:1px;background:var(--border);margin:8px 0;}
+.sbox{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 13px;}
+.sbox-label{font-size:0.72rem;color:var(--muted);margin-bottom:3px;}
+.sbox-val{font-size:1.05rem;font-weight:900;color:#6fcf8a;direction:ltr;}
+.gbox{background:rgba(255,255,255,0.04);border-radius:6px;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:0.7rem;}
+.gbox .gl{color:var(--muted);}
+.gbox .gv{color:#fff;font-weight:700;direction:ltr;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🕋 حاسبة أسعار العمرة — موسم 1448</h1>
+  <p>نفس منطق الإكسل بالضبط</p>
+</div>
+
+<div class="row1">
+  <!-- كارد 1: الرسوم الثابتة -->
+  <div class="card no-gap-right">
+    <div class="card-title">⚙️ الرسوم الثابتة</div>
+    <div class="row"><label>رسوم التأشيرة</label><input type="number" id="visa" value="300" oninput="calc()"></div>
+    <div class="row"><label>التأمين الطبي</label><input type="number" id="ins" value="25.3" oninput="calc()"></div>
+    <div class="row"><label>الخدمات الإلكترونية</label><input type="number" id="elec" value="96.46" oninput="calc()"></div>
+    <div class="divider"></div>
+    <div class="row"><label>فندق مكة (محسوب)</label><span class="calc-val" id="c_mecca">—</span></div>
+    <div class="row"><label>هامش ربح الفندق (محسوب)</label><span class="calc-val" id="c_hmecca">—</span></div>
+    <div class="row"><label>فندق المدينة (محسوب)</label><span class="calc-val" id="c_medina">—</span></div>
+    <div class="row"><label>هامش ربح المدينة</label><span class="calc-val" id="c_hmedina">—</span></div>
+    <div class="divider"></div>
+    <div class="row"><label>الخدمات الإثرائية</label><input type="number" id="enr" value="10" oninput="calc()"></div>
+    <div class="row"><label>هامش الربح</label><input type="number" id="mrg" value="0" oninput="calc()"></div>
+    <div class="row"><label>استقبال الباص + هامش</label><input type="number" id="bus1" value="10" oninput="calc()"></div>
+    <div class="row"><label>انتقال الباص</label><input type="number" id="bus2" value="10" oninput="calc()"></div>
+    <div class="row"><label>هامش ربح إضافي</label><input type="number" id="mrg2" value="5" oninput="calc()"></div>
+    <div class="divider"></div>
+    <div class="row total"><label>الإجمالي الثابت</label><span class="calc-val" id="c_fixed">—</span></div>
+  </div>
+
+  <!-- كارد 2: إعداد الباقات -->
+  <div class="card no-gap-left">
+    <div class="card-title">🏨 إعداد الباقات</div>
+    <div class="row"><label>هامش ربح الفندق %</label><input type="number" id="hmpct" value="10" oninput="calc()"></div>
+    <div class="divider"></div>
+    <table class="pt">
+      <thead>
+        <tr>
+          <th>الباقة</th>
+          <th>سعر مكة/ليلة</th>
+          <th>أيام مكة</th>
+          <th>إجمالي مكة</th>
+          <th>سعر مدينة/ليلة</th>
+          <th>أيام مدينة</th>
+          <th>إجمالي مدينة</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="row0" class="ar">
+          <td>🟢 اقتصادية</td>
+          <td><input type="number" id="p0_mp" value="80"  oninput="syncMedina(0);calc()"></td>
+          <td><input type="number" id="p0_md" value="2"   oninput="syncMedina(0);calc()"></td>
+          <td><span class="cv" id="p0_mt">—</span></td>
+          <td><input type="number" id="p0_np" value="80"  oninput="calc()"></td>
+          <td><input type="number" id="p0_nd" value="2"   oninput="calc()"></td>
+          <td><span class="cv" id="p0_nt">—</span></td>
+        </tr>
+        <tr id="row1">
+          <td>🔵 متوسطة</td>
+          <td><input type="number" id="p1_mp" value="250" oninput="syncMedina(1);calc()"></td>
+          <td><input type="number" id="p1_md" value="2"   oninput="syncMedina(1);calc()"></td>
+          <td><span class="cv" id="p1_mt">—</span></td>
+          <td><input type="number" id="p1_np" value="250" oninput="calc()"></td>
+          <td><input type="number" id="p1_nd" value="2"   oninput="calc()"></td>
+          <td><span class="cv" id="p1_nt">—</span></td>
+        </tr>
+        <tr id="row2">
+          <td>🟡 فاخرة</td>
+          <td><input type="number" id="p2_mp" value="380" oninput="syncMedina(2);calc()"></td>
+          <td><input type="number" id="p2_md" value="2"   oninput="syncMedina(2);calc()"></td>
+          <td><span class="cv" id="p2_mt">—</span></td>
+          <td><input type="number" id="p2_np" value="380" oninput="calc()"></td>
+          <td><input type="number" id="p2_nd" value="2"   oninput="calc()"></td>
+          <td><span class="cv" id="p2_nt">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="divider"></div>
+    <div class="pkgs">
+      <div class="pb active" id="pkg0" onclick="selPkg(0)">اقتصادية<div class="pb-sub" id="bp0">—</div></div>
+      <div class="pb" id="pkg1" onclick="selPkg(1)">متوسطة<div class="pb-sub" id="bp1">—</div></div>
+      <div class="pb" id="pkg2" onclick="selPkg(2)">فاخرة<div class="pb-sub" id="bp2">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="row2">
+  <!-- كارد 3: الهدف والنتيجة -->
+  <div class="card">
+    <div class="card-title">🎯 الهدف والنتيجة</div>
+    <div class="row highlight"><label>💰 المجموع الكلي المطلوب للمعتمر</label><input type="number" id="target" value="1000" oninput="calc()"></div>
+    <div class="row"><label>عدد المعتمرين</label><input type="number" id="pax" value="1" min="1" oninput="calc()"></div>
+    <div class="divider"></div>
+    <div class="row"><label>الإجمالي الثابت</label><span class="calc-val" id="r_fixed">—</span></div>
+    <div class="row total"><label>✅ سعة البرنامج (تدخلها في السيستم)</label><span class="calc-val" id="r_sys" style="font-size:1rem;">—</span></div>
+    <div class="divider"></div>
+    <div class="row total"><label>💰 المجموع الكلي للمعتمر</label><span class="calc-val" style="color:var(--gold-l)" id="r_perpax">—</span></div>
+    <div class="row"><label id="pax_lbl">إجمالي الرحلة</label><span class="calc-val" style="color:var(--gold-l)" id="r_grp">—</span></div>
+  </div>
+
+  <!-- كارد 4: ملخص البنود -->
+  <div class="card" style="border-color:rgba(111,207,138,0.3);">
+    <div class="card-title" style="color:#6fcf8a;">📋 ملخص البنود — اسحب هذه الأرقام للنظام بالترتيب</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;">
+      <div class="sbox"><div class="sbox-label">أجور التأشيرة</div><div class="sbox-val" id="s_visa">—</div></div>
+      <div class="sbox"><div class="sbox-label">التأمين الطبي</div><div class="sbox-val" id="s_ins">—</div></div>
+      <div class="sbox"><div class="sbox-label">أجور الخدمات الإلكترونية</div><div class="sbox-val" id="s_elec">—</div></div>
+      <div class="sbox" id="sbox_mecca"><div class="sbox-label">الفنادق (مكة)</div><div class="sbox-val" id="s_mecca">—</div></div>
+      <div class="sbox" id="sbox_hm_mecca"><div class="sbox-label">هامش ربح الفنادق</div><div class="sbox-val" id="s_hm_mecca">—</div></div>
+      <div class="sbox" id="sbox_medina" style="display:none;"><div class="sbox-label">الفنادق (المدينة)</div><div class="sbox-val" id="s_medina">—</div></div>
+      <div class="sbox" id="sbox_hm_medina" style="display:none;"><div class="sbox-label">هامش ربح فندق المدينة</div><div class="sbox-val" id="s_hm_medina">—</div></div>
+      <div class="sbox"><div class="sbox-label">الخدمات الإثرائية</div><div class="sbox-val" id="s_enr">—</div></div>
+      <div class="sbox" id="sbox_mrg" style="display:none;"><div class="sbox-label">هامش الربح</div><div class="sbox-val" id="s_mrg">—</div></div>
+      <div class="sbox"><div class="sbox-label">الخدمات الإضافية (النقل)</div><div class="sbox-val" id="s_bus">—</div></div>
+      <div class="sbox" style="border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.08);"><div class="sbox-label" style="color:var(--gold);">سعة البرنامج (الخدمات الأرضية)</div><div class="sbox-val" id="s_sys" style="color:var(--gold-l);">—</div></div>
+      <div class="sbox" style="border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.08);"><div class="sbox-label" style="color:var(--gold);">الإجمالي الثابت</div><div class="sbox-val" id="s_fixed2" style="color:var(--gold-l);">—</div></div>
+      <div class="sbox" style="border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.08);"><div class="sbox-label" style="color:var(--gold);">المجموع الكلي للمعتمر</div><div class="sbox-val" id="s_total" style="color:var(--gold-l);">—</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let sp = 0;
+
+function syncMedina(n){
+  document.getElementById('p'+n+'_np').value = document.getElementById('p'+n+'_mp').value;
+  document.getElementById('p'+n+'_nd').value = document.getElementById('p'+n+'_md').value;
+}
+
+function selPkg(i){
+  sp = i;
+  [0,1,2].forEach(n=>{
+    document.getElementById('pkg'+n).classList.toggle('active',n===i);
+    document.getElementById('row'+n).classList.toggle('ar',n===i);
+  });
+  calc();
+}
+
+function v(id){ return parseFloat(document.getElementById(id).value)||0; }
+function fmt(n){ return n.toLocaleString('ar-SA',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function set(id,val){ document.getElementById(id).textContent=val; }
+
+function calc(){
+  const hmpct = v('hmpct')/100;
+
+  // حساب كل باقة (إجمالي مكة والمدينة)
+  [0,1,2].forEach(n=>{
+    const mt = v('p'+n+'_mp') * v('p'+n+'_md');
+    const nt = v('p'+n+'_np') * v('p'+n+'_nd');
+    set('p'+n+'_mt', fmt(mt));
+    set('p'+n+'_nt', fmt(nt));
+    // زر الباقة يعرض إجمالي مكة + مدينة
+    set('bp'+n, fmt(mt+nt)+' ر');
+  });
+
+  // الباقة المختارة
+  const mecca_total  = v('p'+sp+'_mp') * v('p'+sp+'_md');   // G = سعر × أيام مكة
+  const medina_total = v('p'+sp+'_np') * v('p'+sp+'_nd');   // E = سعر × أيام مدينة
+  const hm_mecca     = mecca_total * hmpct;                  // B6 = B5 × 10%
+  const hm_medina    = medina_total * hmpct;                 // هامش مدينة
+
+  // الرسوم الثابتة الأخرى
+  const visa  = v('visa');
+  const ins   = v('ins');
+  const elec  = v('elec');
+  const enr   = v('enr');
+  const mrg   = v('mrg');
+  const bus1  = v('bus1');
+  const bus2  = v('bus2');
+  const mrg2  = v('mrg2');
+
+  // الإجمالي الثابت = SUM(B2:B12) نفس الإكسل
+  const fixed = visa + ins + elec + mecca_total + hm_mecca + enr + medina_total + hm_medina + mrg + bus1 + bus2 + mrg2;
+
+  const target = v('target');
+  const sys    = target - fixed;
+  const pax    = Math.max(1, v('pax'));
+  const grp    = target * pax;
+
+  // تحديث الرسوم الثابتة المحسوبة
+  set('c_mecca',   fmt(mecca_total));
+  set('c_hmecca',  fmt(hm_mecca));
+  set('c_medina',  fmt(medina_total));
+  set('c_hmedina', fmt(hm_medina));
+  set('c_fixed',   fmt(fixed));
+
+  // تحديث النتائج
+  set('r_fixed',  fmt(fixed)+' ر');
+  set('r_perpax', fmt(target)+' ر');
+  set('r_grp',    fmt(grp)+' ر');
+  set('pax_lbl',  'إجمالي الرحلة ('+pax+' معتمر'+(pax>1?'ين':'')+')');
+
+  // ملخص النظام
+  set('s_visa',      fmt(visa));
+  set('s_ins',       fmt(ins));
+  set('s_elec',      fmt(elec));
+  set('s_mecca',     fmt(mecca_total));
+  set('s_hm_mecca',  fmt(hm_mecca));
+  set('s_medina',    fmt(medina_total));
+  set('s_hm_medina', fmt(hm_medina));
+  set('s_enr',       fmt(enr));
+  set('s_mrg',       fmt(mrg));
+  set('s_bus',       fmt(bus1+bus2));
+  set('s_sys',       fmt(sys));
+  set('s_fixed2',    fmt(fixed));
+  set('s_total',     fmt(target));
+  document.getElementById('sbox_medina').style.display    = medina_total > 0 ? '' : 'none';
+  document.getElementById('sbox_hm_medina').style.display = hm_medina > 0 ? '' : 'none';
+  document.getElementById('sbox_mrg').style.display       = mrg > 0 ? '' : 'none';
+
+  const sysEl = document.getElementById('r_sys');
+  sysEl.textContent = fmt(sys)+' ر';
+  sysEl.style.color = sys >= 0 ? '#6fcf8a' : '#f87171';
+}
+
+calc();
+</script>
+</body>
+</html>
